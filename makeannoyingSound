@@ -1,0 +1,22 @@
+import javax.sound.sampled.*;
+
+public class ToneGenerator {
+    public static void main(String[] args) throws Exception {
+        float sampleRate = 44100;
+        byte[] buffer = new byte[1];
+
+        AudioFormat format = new AudioFormat(sampleRate, 8, 1, true, false);
+        SourceDataLine line = AudioSystem.getSourceDataLine(format);
+        line.open(format);
+        line.start();
+
+        for (int i = 0; i < sampleRate * 2; i++) { // 2 seconds
+            double angle = i / (sampleRate / 440.0) * 2.0 * Math.PI;
+            buffer[0] = (byte)(Math.sin(angle) * 127);   /*annoying sound here*/
+            line.write(buffer, 0, 1);
+        }
+
+        line.drain();
+        line.close();
+    }
+}
